@@ -106,7 +106,7 @@ public:
     // Tạo tài khoản mới cho khách hàng
     std::string createAccount(const std::string& customerName, double initialBalance, const std::string& password) {
         std::string accountId = generateAccountId();
-        accounts[accountId] = Account(accountId, customerName, initialBalance, password);
+        accounts[accountId] = Account(accountId, customerName, 0.0 , password);
         std::cout << "Tài khoản mới đã được tạo với ID: " << accountId << std::endl;
         
         // Lưu tài khoản mới vào file
