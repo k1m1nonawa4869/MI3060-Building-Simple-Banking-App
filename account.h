@@ -62,11 +62,9 @@ public:
     Account() : accountId(""), customerName(""), balance(0.0), password("") {}
     // Constructor
     Account(const std::string& id, const std::string& name, double initialBalance, const std::string& pwd)
-        : accountId(id), customerName(name), balance(initialBalance), password(pwd) {
+        : accountId(id), customerName(name), balance(0.0), password(pwd) {
         // Ghi lại giao dịch đầu tiên là tạo tài khoản với số dư ban đầu
-        if (initialBalance > 0) {
-            addTransaction("deposit", initialBalance, "Số dư khởi tạo");
-        }
+        addTransaction("create", 0.0 , "Tạo tài khoản mới");
     }
 
     // Getters
