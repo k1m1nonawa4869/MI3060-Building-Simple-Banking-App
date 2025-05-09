@@ -171,17 +171,36 @@ public:
             return false;
         }
         
+        if (toAccountId.empty()) {
+            std::cout << "ID tài khoản đích không được để trống!" << std::endl;
+            return false;
+        }
+        
+        if (toAccountId == currentCustomerAccountId) {
+            std::cout << "Không thể chuyển khoản cho chính mình!" << std::endl;
+            return false;
+        }
+        
         if (!accountExists(toAccountId)) {
             std::cout << "Tài khoản đích không tồn tại!" << std::endl;
             return false;
         }
         
-        bool result = accounts[currentCustomerAccountId].transferTo(accounts[toAccountId], amount);
+        if (amount <= 0) {
+            std::cout << "Số tiền chuyển khoản phải lớn hơn 0!" << std::endl;
+            return false;
+        }
+        
+        // Correct map access
+        Account& sourceAccount = accounts[currentCustomerAccountId];
+        Account& destAccount = accounts[toAccountId];
+    
+        bool result = sourceAccount.transferTo(destAccount, amount);
         
         // Cập nhật thông tin cả hai tài khoản vào file sau khi chuyển khoản
         if (result && fileManager != nullptr) {
-            fileManager->updateAccount(accounts[currentCustomerAccountId]);
-            fileManager->updateAccount(accounts[toAccountId]);
+            fileManager->updateAccount(sourceAccount);
+            fileManager->updateAccount(destAccount);
         }
         
         return result;
