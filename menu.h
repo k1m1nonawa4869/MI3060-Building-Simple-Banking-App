@@ -89,6 +89,7 @@ private:
             else if (bankManager.isCustomerLoggedIn()) {
                 displayCustomerMenu1();
                 std::cin >> choice ;
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 switch (choice) {
                     case 1: 
                         checkBalance();
