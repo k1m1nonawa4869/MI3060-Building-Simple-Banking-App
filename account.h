@@ -96,7 +96,7 @@ public:
         std::cout << "Số dư tài khoản " << accountId << ": " << balance << " VND" << std::endl;
     }
 
-    // Gửi tiền
+    // NẠP tiền vào tài khoản khách hàng 
     bool deposit(double amount) {
         if (amount <= 0) {
             std::cout << "Số tiền gửi phải lớn hơn 0!" << std::endl;
@@ -105,7 +105,7 @@ public:
         
         balance += amount;
         addTransaction("deposit", amount, "Gửi tiền");
-        std::cout << "Gửi tiền thành công. Số dư mới: " << balance << " VND" << std::endl;
+        std::cout << "Nạp tiền thành công. Số dư mới: " << balance << " VND" << std::endl;
         return true;
     }
 
