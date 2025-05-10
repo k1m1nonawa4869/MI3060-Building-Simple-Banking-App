@@ -35,6 +35,7 @@ private:
         std::cout << "2.Gửi tiền" << std::endl;
         std::cout << "3.Rút tiền" << std::endl;
         std::cout << "4.Chuyển khoản" << std::endl;
+        std::cout << "5.Xem lịch sử giao dịch" << std::endl;
         std::cout << "0.Đăng xuất" << std::endl;
         std::cout << "Lựa chọn của bạn là: " ;
     }
@@ -103,6 +104,9 @@ private:
                     case 4: 
                         transfer();
                         break;
+                    case 5:
+                        bankManager.viewTransactionHistory();
+                        break; 
                     case 0: 
                         bankManager.customerLogout ();
                         std::cout << "Đăng xuất thành công!" << std::endl;
@@ -160,9 +164,6 @@ private:
         std::cout << "Nhập tên khách hàng: ";
         std::getline(std::cin, customerName);
         
-        std::cout << "Nhập số dư ban đầu: ";
-        std::cin >> initialBalance;
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         
         std::cout << "Tạo mật khẩu: ";
         std::getline(std::cin, password);
