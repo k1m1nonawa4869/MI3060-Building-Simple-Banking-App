@@ -15,13 +15,35 @@ private:
     time_t timestamp;        // Thời gian giao dịch
     std::string fromAccount; // Tài khoản nguồn (nếu là transfer)
     std::string toAccount;   // Tài khoản đích (nếu là transfer)
+    std::string timeStr;     // Chuỗi thời gian (để lưu và đọc từ file)
 
 public:
-    // Constructor
+    // Constructor thông thường
     Transaction(const std::string& type, double amount, const std::string& description,
                 const std::string& fromAcc = "", const std::string& toAcc = "")
         : type(type), amount(amount), description(description), fromAccount(fromAcc), toAccount(toAcc) {
         timestamp = time(nullptr);
+        
+        // Chuyển đổi timestamp thành chuỗi thời gian
+        char buffer[26];
+        ctime_s(buffer, sizeof(buffer), &timestamp);
+        timeStr = buffer;
+        // Loại bỏ ký tự xuống dòng ở cuối
+        if (!timeStr.empty() && timeStr[timeStr.size() - 1] == '\n') {
+            timeStr.erase(timeStr.size() - 1);
+        }
+    }
+    
+    // Constructor đặc biệt để tạo giao dịch từ dữ liệu file
+    Transaction(const std::string& type, double amount, const std::string& description,
+                const std::string& fromAcc, const std::string& toAcc, const std::string& timeStrData)
+        : type(type), amount(amount), description(description), fromAccount(fromAcc), toAccount(toAcc), timeStr(timeStrData) {
+        // Sử dụng chuỗi thời gian đã cho
+        // Chúng ta có thể chuyển đổi từ chuỗi thành timestamp nếu cần
+        struct tm tm = {};
+        std::istringstream ss(timeStrData);
+        ss >> std::get_time(&tm, "%a %b %d %H:%M:%S %Y");
+        timestamp = mktime(&tm);
     }
 
     // Getters
@@ -29,15 +51,14 @@ public:
     double getAmount() const { return amount; }
     std::string getDescription() const { return description; }
     time_t getTimestamp() const { return timestamp; }
+    std::string getTimeStr() const { return timeStr; }
     std::string getFromAccount() const { return fromAccount; }
     std::string getToAccount() const { return toAccount; }
 
     // Hiển thị thông tin giao dịch
     void display() const {
-        char timeStr[26];
-        ctime_s(timeStr, sizeof(timeStr), &timestamp);
         std::cout << "Thời gian: " << timeStr
-                  << "Loại giao dịch: " << type
+                  << ", Loại giao dịch: " << type
                   << ", Số tiền: " << amount
                   << ", Mô tả: " << description;
         
@@ -64,7 +85,7 @@ public:
     Account(const std::string& id, const std::string& name, double initialBalance, const std::string& pwd)
         : accountId(id), customerName(name), balance(initialBalance), password(pwd) {
         // Ghi lại giao dịch đầu tiên là tạo tài khoản với số dư ban đầu
-        addTransaction("create", initialBalance , "Tạo tài khoản mới");
+        addTransaction("create", initialBalance, "Tạo tài khoản mới với số dư ban đầu");
     }
 
     // Getters
@@ -81,11 +102,23 @@ public:
     std::string getPassword() const {
         return password;
     }
+    
+    // Lấy lịch sử giao dịch
+    const std::vector<Transaction>& getTransactionHistory() const {
+        return transactionHistory;
+    }
 
     // Thêm giao dịch vào lịch sử
     void addTransaction(const std::string& type, double amount, const std::string& description,
                         const std::string& fromAcc = "", const std::string& toAcc = "") {
         Transaction trans(type, amount, description, fromAcc, toAcc);
+        transactionHistory.push_back(trans);
+    }
+    
+    // Thêm giao dịch từ file vào lịch sử
+    void addTransactionFromFile(const std::string& type, double amount, const std::string& description,
+                             const std::string& fromAcc, const std::string& toAcc, const std::string& timeStr) {
+        Transaction trans(type, amount, description, fromAcc, toAcc, timeStr);
         transactionHistory.push_back(trans);
     }
 
