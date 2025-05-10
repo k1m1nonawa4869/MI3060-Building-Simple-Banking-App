@@ -206,6 +206,24 @@ public:
         return result;
     }
 
+    // Chức năng của khách hàng: xem lịch sử giao dịch của bản thân 
+    bool viewTransactionHistory() {
+        if (!isCustomerLoggedIn()) {
+            std::cout << "Bạn cần đăng nhập để thực hiện chức năng này!" << std::endl;
+            return false;
+        }
+        
+        std::cout << "===== LỊCH SỬ GIAO DỊCH =====" << std::endl;
+        std::cout << "Tài khoản: " << currentCustomerAccountId << " - " 
+                 << accounts[currentCustomerAccountId].getCustomerName() << std::endl;
+        std::cout << std::string(80, '-') << std::endl;
+        
+        // Gọi phương thức hiển thị lịch sử giao dịch từ đối tượng Account
+        accounts[currentCustomerAccountId].displayTransactionHistory();
+        
+        return true;
+    }
+
     // Chức năng của nhân viên: Đăng nhập
     bool employeeLogin(const std::string& employeeId, const std::string& password) {
         auto it = employees.find(employeeId);
