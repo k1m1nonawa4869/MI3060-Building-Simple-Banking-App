@@ -1,3 +1,4 @@
+// File: AccountList.cpp
 #include "AccountList.h"
 #include <fstream>
 #include <sstream>
@@ -32,7 +33,6 @@ bool AccountList::deleteById(int id) {
     return false;
 }
 
-//this part should be using other algorithm to make it O(nlogn)
 BankAccount* AccountList::findById(int id) const {
     for (Node* cur = head; cur; cur = cur->next) {
         if (cur->account.id == id) return &cur->account;
@@ -46,12 +46,20 @@ void AccountList::load(const std::string& file) {
     std::string line;
     while (std::getline(in, line)) {
         std::istringstream iss(line);
-        BankAccount acct;
-        std::getline(iss, line, ','); acct.id = std::stoi(line);
-        std::getline(iss, acct.name, ',');
-        std::getline(iss, line, ','); acct.balance = std::stoi(line);
-        std::getline(iss, line, ','); acct.setPin(std::stoi(line));
-        std::getline(iss, line); acct.setLocked(line == "1");
+        int id, balance;
+        std::string name, pin, created, modified;
+        char flag;
+        // CSV: id,name,balance,pin,locked,created,modified
+        std::getline(iss, line, ','); id = std::stoi(line);
+        std::getline(iss, name, ',');
+        std::getline(iss, line, ','); balance = std::stoi(line);
+        std::getline(iss, pin, ',');
+        iss >> flag; iss.ignore(1); bool locked = (flag == '1');
+        std::getline(iss, created, ',');
+        std::getline(iss, modified);
+
+        BankAccount acct(id, name, pin, balance, created, modified);
+        acct.setLocked(locked);
         addAccount(acct);
     }
 }
@@ -64,45 +72,57 @@ void AccountList::save(const std::string& file) const {
             << a.name << ','
             << a.balance << ','
             << a.getPin() << ','
-            << (a.isLocked() ? '1' : '0') << '\n';
+            << (a.isLocked() ? '1' : '0') << ','
+            << a.getCreated() << ','
+            << a.getModified() << '\n';
     }
 }
 
 void AccountList::printAllAdmin() const {
     std::cout << "\n--- All Accounts (Admin) ---\n";
     std::cout << std::left
-              << std::setw(10) << "ID"
-              << std::setw(25) << "Name"
+              << std::setw(6)  << "ID"
+              << std::setw(20) << "Name"
               << std::setw(10) << "Balance"
               << std::setw(10) << "Status"
+              << std::setw(20) << "Created"
+              << std::setw(20) << "Modified"
               << std::endl;
-    std::cout << std::string(55, '-') << std::endl;
+    std::cout << std::string(86, '-') << std::endl;
     for (Node* cur = head; cur; cur = cur->next) {
         const auto& a = cur->account;
         std::cout << std::left
-                  << std::setw(10) << a.id
-                  << std::setw(25) << a.name
+                  << std::setw(6)  << a.id
+                  << std::setw(20) << a.name
                   << std::setw(10) << a.balance
                   << std::setw(10) << (a.isLocked() ? "Locked" : "Unlocked")
+                  << std::setw(20) << a.getCreated()
+                  << std::setw(20) << a.getModified()
                   << std::endl;
     }
-    std::cout << std::string(55, '-') << std::endl;
+    std::cout << std::string(86, '-') << std::endl;
 }
 
 void AccountList::printUserNode(const BankAccount& a) const {
-    std::cout << "--- Your Account ---";
+    std::cout << "\n--- Your Account ---\n";
     std::cout << std::left
-              << std::setw(10) << "ID"
-              << std::setw(25) << "Name"
+              << std::setw(6)  << "ID"
+              << std::setw(20) << "Name"
               << std::setw(10) << "Balance"
               << std::setw(10) << "Status"
-              << std::setw(6)  << "PIN" << std::endl;
-    std::cout << std::string(61, '-') << std::endl;
+              << std::setw(20) << "Created"
+              << std::setw(20) << "Modified"
+              << std::setw(6)  << "PIN"
+              << std::endl;
+    std::cout << std::string(92, '-') << std::endl;
     std::cout << std::left
-              << std::setw(10) << a.id
-              << std::setw(25) << a.name
+              << std::setw(6)  << a.id
+              << std::setw(20) << a.name
               << std::setw(10) << a.balance
               << std::setw(10) << (a.isLocked() ? "Locked" : "Unlocked")
-              << std::setw(6)  << a.getPin() << std::endl;
-    std::cout << std::string(61, '-') << std::endl;
+              << std::setw(20) << a.getCreated()
+              << std::setw(20) << a.getModified()
+              << std::setw(6)  << a.getPin()
+              << std::endl;
+    std::cout << std::string(92, '-') << std::endl;
 }

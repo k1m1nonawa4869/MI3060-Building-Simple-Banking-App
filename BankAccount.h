@@ -6,24 +6,34 @@
 
 class BankAccount {
 private:
-    int pin;
+    std::string pin;
     bool locked;
+    std::string created;
+    std::string modified;
+
 public:
     int id;
     std::string name;
     int balance;
 
+    // Constructor for new or loaded accounts
     BankAccount(int acctId = 0,
                 const std::string& acctName = "",
-                int acctPin = 0,
-                int acctBalance = 0);
+                const std::string& acctPin = "",
+                int acctBalance = 0,
+                const std::string& createdTime = "",
+                const std::string& modifiedTime = "");
 
-    bool verifyPin(int inputPin) const;
-    void setPin(int newPin);
-    int getPin() const;
+    bool verifyPin(const std::string& inputPin) const;
+    void setPin(const std::string& newPin);
+    const std::string& getPin() const;
 
     bool isLocked() const;
     void setLocked(bool s);
+
+    const std::string& getCreated() const;
+    const std::string& getModified() const;
+    void updateModified();
 };
 
 #endif // BANK_ACCOUNT_H
