@@ -1,0 +1,9 @@
+# ninja log v6
+11	855	7693005991213493	CMakeFiles/bank_management.dir/main.cpp.obj	c77a95a2f0db7e95
+23	878	7693005991336994	CMakeFiles/bank_management.dir/BankAccount.cpp.obj	d4305b9dfd756bca
+66	1137	7693005991776921	CMakeFiles/bank_management.dir/Actions.cpp.obj	cbceb3612aaeeef5
+33	1242	7693005991456925	CMakeFiles/bank_management.dir/AccountList.cpp.obj	9e55fed0d9f3ccf7
+47	1266	7693005991587025	CMakeFiles/bank_management.dir/TransactionList.cpp.obj	2d250c2787c4309e
+1269	2444	7693006003788003	bank_management.exe	123553899afb8a23
+23	868	7693019819640113	CMakeFiles/bank_management.dir/AccountList.cpp.obj	9e55fed0d9f3ccf7
+872	1794	7693019828105851	bank_management.exe	123553899afb8a23
