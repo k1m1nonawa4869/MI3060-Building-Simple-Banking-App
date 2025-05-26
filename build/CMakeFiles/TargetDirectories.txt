@@ -1,0 +1,3 @@
+C:/Users/thisis4nges/Documents/GitHub/MI3060-Building-Simple-Banking-App/build/CMakeFiles/bank_management.dir
+C:/Users/thisis4nges/Documents/GitHub/MI3060-Building-Simple-Banking-App/build/CMakeFiles/edit_cache.dir
+C:/Users/thisis4nges/Documents/GitHub/MI3060-Building-Simple-Banking-App/build/CMakeFiles/rebuild_cache.dir
