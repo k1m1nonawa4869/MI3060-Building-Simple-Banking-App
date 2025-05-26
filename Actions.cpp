@@ -101,7 +101,7 @@ void displayAccountAction(AccountList& list) {
 void updateAccountAction(AccountList& list) {
     char cont = 'y';
     while (cont == 'y') {
-        int id; std::cout << "Enter account ID to update: "; std::cin >> id;
+        int id; std::cout << "Enter account ID to update: "; id = restrictIDInt();
         BankAccount* acct = list.findById(id);
         if (!acct) {
             std::cout << "Account not found." << std::endl;
@@ -146,7 +146,7 @@ void updateAccountAction(AccountList& list) {
 // 4. Lock/Unlock Account
 void lockUnlockAction(AccountList& list) {
     int id; std::string pin;
-    std::cout << "Enter your account ID: "; std::cin >> id;
+    std::cout << "Enter your account ID: "; id = restrictIDInt();
     std::cout << "Enter your PIN: "; std::cin >> pin;
 
     BankAccount* acct = list.findById(id);
@@ -169,7 +169,7 @@ void lockUnlockAction(AccountList& list) {
 void transactionAction(AccountList& list, TransactionList& tlist) {
     char cont = 'y';
     while (cont=='y') {
-        int id; std::cout<<"ID: "; std::cin>>id;
+        int id; std::cout<<"ID: "; id = restrictIDInt();
         BankAccount* acct = list.findById(id);
 
         if (!acct) { std::cout<<"Not found."<<std::endl; continue; }
@@ -239,7 +239,7 @@ void transferMoneyAction(AccountList& list, TransactionList& tlist) {
 }
 
 
-// 7. Transaction History
+// 7. Transaction History (admin only)
 void displayHistoryAction(AccountList& list, TransactionList& tlist) {
     while (true) {
         int id;
@@ -266,7 +266,7 @@ void displayHistoryAction(AccountList& list, TransactionList& tlist) {
         break;
     }
 }
-// 8. Undo Last Transaction
+// 8. Undo Last Transaction (admin only)
 void undoTransactionAction(AccountList& list, TransactionList& tlist) {
     int id;
     std::string pin;
