@@ -10,20 +10,25 @@ struct Transfer {
     std::string type;
     int destinationId;
     int amount;
-    int balanceAfter;
+    int balanceAfter;      // origin's balance after action
+    int destBalanceAfter;  // destination's balance after action
     std::string timestamp;
 };
 
 class TransactionList {
 public:
     TransactionList();
-    void add(int origin, const std::string& type, int dest, int amt, int balAfter);
+    void add(int origin, const std::string& type, int dest, int amt, int balAfter, int destBalanceAfter);
     bool popLast(Transfer& out);
     void markDeleted(int delId);
     void load(const std::string& file);
     void save(const std::string& file) const;
     void printAllAdmin() const;
     void printUser(int userId) const;
+    // Print all mutual transactions (newest→oldest) between userId and destId,
+    // numbering them 1..N, and return the count.
+    bool undoBetween(int userId, int destId, int order, Transfer& outData);
+    int printBetween(int userId, int destId) const;
 
 private:
     struct Node {

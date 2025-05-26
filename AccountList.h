@@ -1,4 +1,4 @@
-// File: AccountList.h
+// File: AccountList.h (add markDeleted)
 #ifndef ACCOUNT_LIST_H
 #define ACCOUNT_LIST_H
 
@@ -15,6 +15,7 @@ public:
     void save(const std::string& file) const;
     void printAllAdmin() const;
     void printUserNode(const BankAccount& acct) const;
+
 private:
     struct Node {
         BankAccount account;
