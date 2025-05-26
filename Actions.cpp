@@ -51,6 +51,10 @@ void addAccountAction(AccountList& list) {
         int id; std::string name; std::string pin;
         while (true) {
             std::cout << "Enter unique account ID: "; id = restrictIDInt();
+            if (id <= 0) {
+                std::cout << "ID must be a positive integer. Try again." << std::endl;
+                continue;
+            }
             if (!list.findById(id)) break;
             std::cout << "That ID already exists. Try again." << std::endl;
         }
@@ -217,6 +221,7 @@ void transferMoneyAction(AccountList& list, TransactionList& tlist) {
         BankAccount* dst=list.findById(did);
         if(!dst){std::cout<<"Dest not found."<<std::endl;continue;}
         if(dst->isLocked()){std::cout<<"Dest locked."<<std::endl;continue;}
+        if(did == sid) {std::cout<<"DestID must be different from SourceID."<<std::endl;continue;}
 
         int amt;
         std::cout << "Amount: ";
