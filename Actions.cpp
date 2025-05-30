@@ -150,19 +150,34 @@ void updateAccountAction(AccountList &list)
 
             while (true)
             {
-                std::cout << "Enter new positive ID (press -1 to keep the ID): ";
-                std::cin >> newId;
-                if (newId == -1)
-                {
+                std::cout << "Enter new positive ID (press 0 to keep the ID): "; newId = restrictIDInt();
+                if (newId < 0) {
+                    std::cout << "ID must be a positive integer." << std::endl;
+                    std::cout << "Try again? (y/n) ";
+                    std::cin >> cont; cont = std::tolower(cont);
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+                    if (cont == 'y') {continue;}
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     break;
                 }
-                if (list.findById(newId))
-                    break;
-                std::cout << "ID exists. Try again." << std::endl;
-            }
-            acct->id = newId;
+                if (list.findById(newId)) {
+                    std::cout << "ID exists." << std::endl;
+                    std::cout << "Try again? (y/n) ";
+                    std::cin >> cont; cont = std::tolower(cont);
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    if (cont == 'y') {continue;}
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    break;
+                }
+                if (newId > 0) {
+                    acct->id = newId;
+                    break;
+                }
+                if (newId == 0) {break;}
+            }
+
             std::cout << "Enter new name (blank to keep): ";
             std::getline(std::cin, newName);
             if (!newName.empty())
