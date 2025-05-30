@@ -1,18 +1,30 @@
-// File: AccountList.h (add markDeleted)
+// File: AccountList.h (with InfoNode and IndexNode)
 #pragma once
 #include "BankAccount.h"
 #include <string>
 
-class AccountList {
-    static const int TABLE_SIZE = 101; // Số bucket, nên là số nguyên tố
-    struct HashNode {
-        BankAccount account;
-        HashNode* next;
-        HashNode(const BankAccount& acct) : account(acct), next(nullptr) {}
-    };
-    HashNode* table[TABLE_SIZE];
+struct InfoNode {
+    BankAccount account;
+    InfoNode* next;
+    InfoNode(const BankAccount& acct) : account(acct), next(nullptr) {}
+};
 
-    int hash(int id) const { return id % TABLE_SIZE; }
+struct IndexNode {
+    int id;
+    InfoNode* infoPtr;
+    IndexNode() : id(0), infoPtr(nullptr) {}
+    IndexNode(int id, InfoNode* ptr) : id(id), infoPtr(ptr) {}
+};
+
+class AccountList {
+    IndexNode* indexArray; // mảng động các IndexNode
+    int size;              // số lượng tài khoản
+    int capacity;          // sức chứa hiện tại của mảng
+    InfoNode* infoHead;    // đầu danh sách liên kết chứa thông tin
+
+    void quickSort(int left, int right);
+    int binarySearch(int id) const;
+    void ensureCapacity();
 
 public:
     AccountList();
