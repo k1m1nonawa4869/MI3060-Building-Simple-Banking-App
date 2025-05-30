@@ -1,8 +1,6 @@
 #include "AccountList.h"
 #include "TransactionList.h"
 #include "Actions.h"
-#include "AccList.h"
-#include "AccTranList.h" 
 
 int main() {
     AccountList list;

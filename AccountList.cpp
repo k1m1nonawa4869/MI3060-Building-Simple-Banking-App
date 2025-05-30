@@ -9,77 +9,12 @@ AccountList::AccountList()
     : head(nullptr)
 {}
 
-// Hàm hoán đổi 2 phần tử trong mảng idArr
-void swapInt(int& a, int& b) {
-    int t = a; a = b; b = t;
-}
-
-// Hàm partition cho quicksort
-int partition(int* arr, int low, int high) {
-    int pivot = arr[high];
-    int i = low - 1;
-    for (int j = low; j < high; ++j) {
-        if (arr[j] < pivot) {
-            ++i;
-            swapInt(arr[i], arr[j]);
-        }
-    }
-    swapInt(arr[i + 1], arr[high]);
-    return i + 1;
-}
-
-// Hàm quicksort cho mảng idArr
-void quickSort(int* arr, int low, int high) {
-    if (low < high) {
-        int pi = partition(arr, low, high);
-        quickSort(arr, low, pi - 1);
-        quickSort(arr, pi + 1, high);
-    }
-}
-
-void AccountList::rebuildIdArray() {
-    // Đếm số node
-    int count = 0;
-    for (Node* cur = head; cur; cur = cur->next) ++count;
-    delete[] idArr;
-    idArr = new int[count];
-    idArrSize = count;
-    int i = 0;
-    for (Node* cur = head; cur; cur = cur->next, ++i) {
-        idArr[i] = cur->account.id;
-    }
-    // Sắp xếp mảng ID tăng dần (quicksort)
-    if (idArrSize > 1)
-        quickSort(idArr, 0, idArrSize - 1);
-    
-}
-
-void AccountList::clearIdIndexList() {
-    while (idIndexHead) {
-        IdIndexNode* tmp = idIndexHead;
-        idIndexHead = idIndexHead->next;
-        delete tmp;
-    }
-    idIndexHead = nullptr;
-}
-
-void AccountList::rebuildIdIndexList() {
-    clearIdIndexList();
-    for (Node* cur = head; cur; cur = cur->next) {
-        IdIndexNode* newNode = new IdIndexNode(cur->account.id, cur);
-        newNode->next = idIndexHead;
-        idIndexHead = newNode;
-    }
-}
-
 void AccountList::addAccount(const BankAccount& acct) {
     auto* node = new Node(acct);
     node->next = head;
     head = node;
     std::cout << "Account " << acct.id
               << " ('" << acct.name << "') added." << std::endl;
-    rebuildIdArray();
-    rebuildIdIndexList();
 }
 
 bool AccountList::deleteById(int id) {
@@ -90,8 +25,6 @@ bool AccountList::deleteById(int id) {
             if (prev) prev->next = cur->next;
             else head = cur->next;
             delete cur;
-            rebuildIdArray();
-            rebuildIdIndexList();
             return true;
         }
         prev = cur;
@@ -102,18 +35,8 @@ bool AccountList::deleteById(int id) {
 
 //this one has to be rewritten in new structure???
 BankAccount* AccountList::findById(int id) const {
-    // Tìm kiếm nhị phân trên mảng idArr
-    int left = 0, right = idArrSize - 1;
-    while (left <= right) {
-        int mid = (left + right) / 2;
-        if (idArr[mid] == id) {
-            // Tìm Node* tương ứng trong danh sách liên kết chỉ số ID
-            for (IdIndexNode* cur = idIndexHead; cur; cur = cur->next) {
-                if (cur->id == id) return &(cur->accountPtr->account);
-            }
-        }
-        if (idArr[mid] < id) left = mid + 1;
-        else right = mid - 1;
+    for (Node* cur = head; cur; cur = cur->next) {
+        if (cur->account.id == id) return &cur->account;
     }
     return nullptr;
 }
@@ -128,15 +51,11 @@ void AccountList::load(const std::string& file) {
         std::istringstream iss(line);
         BankAccount acct;
         // parse CSV: id,name,balance,pin,locked,created,modified
-        std::getline(iss, line, ','); 
-        acct.id = std::stoi(line);
+        std::getline(iss, line, ','); acct.id = std::stoi(line);
         std::getline(iss, acct.name, ',');
-        std::getline(iss, line, ','); 
-        acct.balance = std::stoi(line);
-        std::getline(iss, line, ','); 
-        acct.setPin(line);
-        char flag; iss >> flag; iss.ignore(1); 
-        acct.setLocked(flag=='1');
+        std::getline(iss, line, ','); acct.balance = std::stoi(line);
+        std::getline(iss, line, ','); acct.setPin(line);
+        char flag; iss >> flag; iss.ignore(1); acct.setLocked(flag=='1');
         std::getline(iss, line, ','); /* use line for created */ 
         acct = BankAccount(acct.id, acct.name, acct.getPin(), acct.balance, line, "");
         std::getline(iss, line); /* line now is modified */
@@ -145,16 +64,10 @@ void AccountList::load(const std::string& file) {
         // **Append** to the tail
         Node* node = new Node(acct);
         node->next = nullptr;
-        if (!head) {
-            head = node;
-        }
-        else {    
-            tail->next = node;
-        }
+        if (!head) head = node;
+        else        tail->next = node;
         tail = node;
     }
-    rebuildIdArray();
-    rebuildIdIndexList();
 }
 
 void AccountList::save(const std::string& file) const {
@@ -227,4 +140,3 @@ void AccountList::printUserNode(const BankAccount& a) const {
               << std::endl;
     std::cout << std::string(92, '-') << std::endl;
 }
-
