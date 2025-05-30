@@ -12,8 +12,6 @@ set(SOURCES
     AccountList.cpp
     TransactionList.cpp
     Actions.cpp
-    AccList.cpp
-    AccTranList.cpp
 )
 
 # Add executable target

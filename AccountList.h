@@ -23,22 +23,6 @@ private:
         Node(const BankAccount& a) : account(a), next(nullptr) {}
     };
     Node* head;
-
-    // Mảng động chứa các ID 
-    int* idArr = nullptr;
-    int idArrSize = 0;
-
-    // Danh sách liên kết chỉ số ID 
-    struct IdIndexNode {
-        int id;
-        Node* accountPtr;
-        IdIndexNode* next;
-        IdIndexNode (int i, Node* acc) : id(i), accountPtr(acc), next(nullptr) {} 
-    };
-    IdIndexNode* idIndexHead = nullptr;
-    void rebuildIdArray();
-    void rebuildIdIndexList();
-    void clearIdIndexList();
 };
 
 #endif // ACCOUNT_LIST_H
