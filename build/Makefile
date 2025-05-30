@@ -272,6 +272,30 @@ TransactionList.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\bank_management.dir\build.make CMakeFiles/bank_management.dir/TransactionList.cpp.s
 .PHONY : TransactionList.cpp.s
 
+Utils.obj: Utils.cpp.obj
+.PHONY : Utils.obj
+
+# target to build an object file
+Utils.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\bank_management.dir\build.make CMakeFiles/bank_management.dir/Utils.cpp.obj
+.PHONY : Utils.cpp.obj
+
+Utils.i: Utils.cpp.i
+.PHONY : Utils.i
+
+# target to preprocess a source file
+Utils.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\bank_management.dir\build.make CMakeFiles/bank_management.dir/Utils.cpp.i
+.PHONY : Utils.cpp.i
+
+Utils.s: Utils.cpp.s
+.PHONY : Utils.s
+
+# target to generate assembly for a file
+Utils.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\bank_management.dir\build.make CMakeFiles/bank_management.dir/Utils.cpp.s
+.PHONY : Utils.cpp.s
+
 main.obj: main.cpp.obj
 .PHONY : main.obj
 
@@ -323,6 +347,9 @@ help:
 	@echo ... TransactionList.obj
 	@echo ... TransactionList.i
 	@echo ... TransactionList.s
+	@echo ... Utils.obj
+	@echo ... Utils.i
+	@echo ... Utils.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
