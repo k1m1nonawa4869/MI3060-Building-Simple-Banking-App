@@ -82,6 +82,8 @@ void addAccountAction(AccountList &list)
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
             list.addAccount(BankAccount(id, name, pin));
+            // Thêm dòng này để lưu file ngay sau khi cập nhật
+            list.save("accounts.txt");
         }
 
         std::cout << "Add another? (y/n): "; 
@@ -174,15 +176,21 @@ void updateAccountAction(AccountList &list)
             {
                 std::cout << "Enter new positive ID (press -1 to keep the ID): ";
                 std::cin >> newId;
-                if (newId == -1)
+
+                if (newId == -1) // Giữ nguyên ID cũ
                 {
+                    newId = acct->id; // Gán lại ID cũ
                     break;
                 }
-                if (list.findById(newId))
-                    break;
-                std::cout << "ID exists. Try again." << std::endl;
+
+                if (!list.findById(newId)) // Nếu ID không tồn tại
+                {
+                    break; // Thoát vòng lặp
+                }
+
+                std::cout << "ID exists. Try again." << std::endl; // ID đã tồn tại
             }
-            acct->id = newId;
+            acct->id = newId; // Gán ID mới cho tài khoản
 
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Enter new name (blank to keep): ";
@@ -199,6 +207,7 @@ void updateAccountAction(AccountList &list)
                 std::cin >> pin;
                 acct->setPin(pin);
             }
+            list.save("accounts.txt");
         }
 
         std::cout << "Update another? (y/n): ";
@@ -257,6 +266,7 @@ void lockUnlockAction(AccountList &list)
         {
             acct->setLocked(!acct->isLocked());
             std::cout << "Now " << (acct->isLocked() ? "Locked" : "Unlocked") << std::endl;
+            list.save("accounts.txt");
         }
 
         break;
@@ -318,6 +328,7 @@ void transactionAction(AccountList &list, TransactionList &tlist)
             acct->balance += amt;
             tlist.add(id, "Deposit", id, amt, acct->balance, acct->balance);
             std::cout << "Deposited Successful." << std::endl;
+            list.save("accounts.txt");
             }
             else //Withdraw money
             {
@@ -330,6 +341,7 @@ void transactionAction(AccountList &list, TransactionList &tlist)
                     acct->balance -= amt;
                     tlist.add(id, "Withdraw", id, amt, acct->balance, acct->balance);
                     std::cout << "Withdrawn Successful." << std::endl;
+                    list.save("accounts.txt");
                 }
             }
         }
@@ -441,6 +453,8 @@ void transferMoneyAction(AccountList &list, TransactionList &tlist)
                     dst->balance += amt;
                     tlist.add(sid, "Transfer", did, amt, src->balance, dst->balance);
                     std::cout << "Transferred Successful." << std::endl;
+
+                    list.save("accounts.txt");
                     
                     std::cout << "Try again? (y/n) ";
                     std::cin >> cont; cont = std::tolower(cont);
