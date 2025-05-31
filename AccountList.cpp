@@ -75,7 +75,13 @@ int AccountList::binarySearch(int id) const {
     }
     return -1;
 }
+void AccountList::updateIndex(int idx, int newId) {
+    // Cập nhật ID trong mảng indexArray
+    indexArray[idx].id = newId;
 
+    // Sắp xếp lại mảng indexArray để đảm bảo thứ tự
+    quickSort(0, size - 1);
+}
 BankAccount* AccountList::findById(int id) const {
     int idx = binarySearch(id);
     if (idx == -1) return nullptr;
@@ -204,4 +210,13 @@ void AccountList::printUserNode(const BankAccount& a) const {
               << std::setw(6)  << a.getPin()
               << std::endl;
     std::cout << std::string(92, '-') << std::endl;
+}
+//update AccID in dynamic array indexArray
+bool AccountList::updateAccountId(int oldId, int newId) {
+    int idx = binarySearch(oldId); // Tìm vị trí của ID cũ
+    if (idx == -1) {
+        return false; // Không tìm thấy ID cũ
+    }
+    updateIndex(idx, newId); // Cập nhật ID trong mảng indexArray
+    return true;
 }

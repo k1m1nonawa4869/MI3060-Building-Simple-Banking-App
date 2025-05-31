@@ -175,6 +175,10 @@ void updateAccountAction(AccountList &list)
                 }
                 if (newId > 0) {
                     acct->id = newId;
+                    // Cập nhật ID trong mảng indexArray
+                    if (!list.updateAccountId(id, newId)) {
+                        std::cout << "Failed to update account ID in index array." << std::endl;
+                    }
                     break;
                 }
                 if (newId == 0) {break;}
