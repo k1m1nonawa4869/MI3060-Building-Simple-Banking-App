@@ -30,7 +30,7 @@ void printMenu()
               << "5. Transaction (Deposit/Withdraw)\n"
               << "6. Transfer Money\n"
               << "7. Transaction History\n"
-              << "8. Undo Last Transaction\n"
+              << "8. Undo Transaction\n"
               << "9. Delete Account\n"
               << "0. Exit\n"
               << "Choose an option: ";
@@ -83,6 +83,8 @@ void addAccountAction(AccountList &list)
             list.addAccount(BankAccount(id, name, pin));
             // Thêm dòng này để lưu file ngay sau khi cập nhật
             list.save("accounts.txt");
+            // Thêm dòng này để lưu file ngay sau khi cập nhật
+            list.save("accounts.txt");
         }
 
         std::cout << "Add another? (y/n): "; 
@@ -118,9 +120,13 @@ void displayAccountAction(AccountList &list)
             std::cin >> cont; cont = std::tolower(cont);
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-            if (cont == 'y') {continue;}
+            if (cont == 'y')
+            {
+                continue;
+            }
             break;
-        } 
+        }
+
         list.printUserNode(*acct);
         break;
     }
@@ -163,7 +169,7 @@ void updateAccountAction(AccountList &list)
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     break;
                 }
-                if (list.findById(newId)) {
+                if (list.findById(newId)) {// ID đã tồn tại
                     std::cout << "ID exists." << std::endl;
                     std::cout << "Try again? (y/n) ";
                     std::cin >> cont; cont = std::tolower(cont);
@@ -181,9 +187,10 @@ void updateAccountAction(AccountList &list)
                     }
                     break;
                 }
-                if (newId == 0) {break;}
+                if (newId == 0) {break;} // Giữ nguyên ID cũ
             }
 
+            //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cout << "Enter new name (blank to keep): ";
             std::getline(std::cin, newName);
             if (!newName.empty())
@@ -198,6 +205,7 @@ void updateAccountAction(AccountList &list)
                 std::cin >> pin;
                 acct->setPin(pin);
             }
+            list.save("accounts.txt");
             list.save("accounts.txt");
         }
 
@@ -245,6 +253,7 @@ void lockUnlockAction(AccountList &list)
             acct->setLocked(!acct->isLocked());
             std::cout << "Now " << (acct->isLocked() ? "Locked" : "Unlocked") << std::endl;
             list.save("accounts.txt");
+            list.save("accounts.txt");
         }
 
         break;
@@ -263,7 +272,12 @@ void transactionAction(AccountList &list, TransactionList &tlist)
 
         BankAccount *acct = list.findById(id);
         int exit = 0;
-        if (!(acct) || !(acct->verifyPin(pin)))
+        if (!acct)
+        {
+            std::cout << "Incorrect AccountID or Password. Program stop." << std::endl;
+            exit = 1;
+        }
+        if (!(acct->verifyPin(pin)))
         {
             std::cout << "Incorrect AccountID or Password. Program stop." << std::endl;
             exit = 1;
@@ -302,6 +316,7 @@ void transactionAction(AccountList &list, TransactionList &tlist)
             tlist.add(id, "Deposit", id, amt, acct->balance, acct->balance);
             std::cout << "Deposited Successful." << std::endl;
             list.save("accounts.txt");
+            list.save("accounts.txt");
             }
             else //Withdraw money
             {
@@ -314,6 +329,7 @@ void transactionAction(AccountList &list, TransactionList &tlist)
                     acct->balance -= amt;
                     tlist.add(id, "Withdraw", id, amt, acct->balance, acct->balance);
                     std::cout << "Withdrawn Successful." << std::endl;
+                    list.save("accounts.txt");
                     list.save("accounts.txt");
                 }
             }
@@ -342,7 +358,7 @@ void transferMoneyAction(AccountList &list, TransactionList &tlist)
             std::cout << "Incorrect AccountID or Password. Program stop." << std::endl;
             exit = 1;
         }
-        if (src->isLocked())
+        if ((exit == 0) && (src->isLocked()))
         {
             std::cout << "Your account has been locked. Unlock to transaction. Program stop." << std::endl;
             exit = 1;
@@ -423,6 +439,8 @@ void transferMoneyAction(AccountList &list, TransactionList &tlist)
                     std::cout << "Transferred Successful." << std::endl;
 
                     list.save("accounts.txt");
+
+                    list.save("accounts.txt");
                     
                     std::cout << "Try again? (y/n) ";
                     std::cin >> cont; cont = std::tolower(cont);
@@ -501,12 +519,6 @@ void undoTransactionAction(AccountList& list, TransactionList& tlist) {
             exit = 1;
         }
 
-        /*if (me->isLocked())
-        {
-            std::cout << "Your account has been locked. Unlock to transaction. Program stop." << std::endl;
-            exit = 1;
-        }*/
-
         if (exit == 1) {
             return;
         }
@@ -515,7 +527,6 @@ void undoTransactionAction(AccountList& list, TransactionList& tlist) {
         return;
     }
     
-
     //Pick counterparty
     std::cout << "Enter counterparty ID: ";
     int destId = restrictIDInt();
@@ -543,6 +554,16 @@ void undoTransactionAction(AccountList& list, TransactionList& tlist) {
     if (!tlist.undoBetween(userId, destId, choice, tr)) {
         std::cout << "Undo failed.\n";
     } else {
+        char cont = 'n';
+        std::cout << "Do you really want to undo this? (y/n) ";
+        std::cin >> cont; cont = std::tolower(cont);
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        if (cont != 'y') {
+            std::cout << "Program stop.\n"; 
+            return;
+        }
+
         BankAccount* aOrig = list.findById(tr.originId);
         BankAccount* aDest = list.findById(tr.destinationId);
         if (tr.type == "Transfer") {
@@ -560,7 +581,7 @@ void undoTransactionAction(AccountList& list, TransactionList& tlist) {
 
 }
 
-// 9. Delete Account
+// 9. Delete Account (require both admin and users identity)
 void deleteAccountAction(AccountList &list, TransactionList &tlist)
 {
     //Identify
@@ -582,11 +603,6 @@ void deleteAccountAction(AccountList &list, TransactionList &tlist)
             std::cout << "Incorrect AccountID or Password. Program stop." << std::endl;
             exit = 1;
         }
-        /*if (me->isLocked())
-        {
-            std::cout << "Your account has been locked. Unlock to transaction. Program stop." << std::endl;
-            exit = 1;
-        }*/
 
         if (exit == 1) {
             return;
@@ -655,21 +671,21 @@ bool actionMenu(AccountList &list, TransactionList &tlist)
     case 7:
         displayHistoryAction(list, tlist);
         returnMenu();
-        break;
+        return true;
     case 8:
         undoTransactionAction(list, tlist);
         returnMenu();
-        break;
+        return true;
     case 9:
         deleteAccountAction(list, tlist);
         returnMenu();
-        break;
+        return true;
     case 0:
         return false;
     default:
         std::cout << "Invalid choice." << std::endl;
         returnMenu();
-        break;
+        return true;
     }
     return true;
 }
