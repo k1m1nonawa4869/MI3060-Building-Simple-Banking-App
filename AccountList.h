@@ -25,7 +25,7 @@ class AccountList {
     void quickSort(int left, int right);
     int binarySearch(int id) const;
     void ensureCapacity();
-
+    void updateIndex(int idx, int newId);
 public:
     AccountList();
     ~AccountList();
@@ -39,4 +39,6 @@ public:
 
     void printAllAdmin() const;
     void printUserNode(const BankAccount& a) const;
+
+    bool updateAccountId(int oldId, int newId);
 };

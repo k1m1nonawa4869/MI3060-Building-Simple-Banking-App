@@ -83,6 +83,8 @@ void addAccountAction(AccountList &list)
             list.addAccount(BankAccount(id, name, pin));
             // Thêm dòng này để lưu file ngay sau khi cập nhật
             list.save("accounts.txt");
+            // Thêm dòng này để lưu file ngay sau khi cập nhật
+            list.save("accounts.txt");
         }
 
         std::cout << "Add another? (y/n): "; 
@@ -178,7 +180,11 @@ void updateAccountAction(AccountList &list)
                     break;
                 }
                 if (newId > 0) {
-                    acct->id = newId; // Gán ID mới cho tài khoản
+                    acct->id = newId;
+                    // Cập nhật ID trong mảng indexArray
+                    if (!list.updateAccountId(id, newId)) {
+                        std::cout << "Failed to update account ID in index array." << std::endl;
+                    }
                     break;
                 }
                 if (newId == 0) {break;} // Giữ nguyên ID cũ
@@ -199,6 +205,7 @@ void updateAccountAction(AccountList &list)
                 std::cin >> pin;
                 acct->setPin(pin);
             }
+            list.save("accounts.txt");
             list.save("accounts.txt");
         }
 
@@ -245,6 +252,7 @@ void lockUnlockAction(AccountList &list)
         {
             acct->setLocked(!acct->isLocked());
             std::cout << "Now " << (acct->isLocked() ? "Locked" : "Unlocked") << std::endl;
+            list.save("accounts.txt");
             list.save("accounts.txt");
         }
 
@@ -308,6 +316,7 @@ void transactionAction(AccountList &list, TransactionList &tlist)
             tlist.add(id, "Deposit", id, amt, acct->balance, acct->balance);
             std::cout << "Deposited Successful." << std::endl;
             list.save("accounts.txt");
+            list.save("accounts.txt");
             }
             else //Withdraw money
             {
@@ -320,6 +329,7 @@ void transactionAction(AccountList &list, TransactionList &tlist)
                     acct->balance -= amt;
                     tlist.add(id, "Withdraw", id, amt, acct->balance, acct->balance);
                     std::cout << "Withdrawn Successful." << std::endl;
+                    list.save("accounts.txt");
                     list.save("accounts.txt");
                 }
             }
@@ -427,6 +437,8 @@ void transferMoneyAction(AccountList &list, TransactionList &tlist)
                     dst->balance += amt;
                     tlist.add(sid, "Transfer", did, amt, src->balance, dst->balance);
                     std::cout << "Transferred Successful." << std::endl;
+
+                    list.save("accounts.txt");
 
                     list.save("accounts.txt");
                     
